@@ -1,0 +1,49 @@
+﻿@page "/league"
+@using BlazorApp.Shared 
+@inject HttpClient Http
+
+<h3>League</h3>
+
+@if (teams == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Takım</th>
+                <th>Oynanan</th>
+                <th>Puan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in teams)
+            {
+                <tr>
+                    <td>@team.Name</td>
+                    <td>@team.Played</td>
+                    <td>@team.Points</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private Team[] teams;
+
+    protected override async Task OnInitializedAsync()
+    {
+      try
+      {
+        teams = await Http.GetFromJsonAsync<Team[]>("/api/League");
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.ToString());
+      }
+    }
+}
